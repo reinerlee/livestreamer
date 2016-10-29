@@ -4,7 +4,7 @@ from livestreamer.plugin import Plugin
 from livestreamer.plugin.api import http, validate
 from livestreamer.stream import RTMPStream, HLSStream
 
-CHANNEL_INFO_URL = "http://live.afreeca.com:8057/api/get_broad_state_list.php"
+CHANNEL_INFO_URL = "http://live.afreecatv.com:8057/api/get_broad_state_list.php"
 KEEP_ALIVE_URL = "{server}/stream_keepalive.html"
 STREAM_INFO_URLS = {
     "rtmp": "http://sessionmanager01.afreeca.tv:6060/broad_stream_assign.html",
@@ -16,7 +16,7 @@ CHANNEL_RESULT_ERROR = 0
 CHANNEL_RESULT_OK = 1
 
 
-_url_re = re.compile("http(s)?://(\w+\.)?afreeca.com/(?P<username>\w+)")
+_url_re = re.compile("http(s)?://(\w+\.)?afreeca(tv)?.com/(?P<username>\w+)/\d+")
 
 _channel_schema = validate.Schema(
     {
@@ -49,10 +49,10 @@ class AfreecaTV(Plugin):
         headers = {
             "Referer": self.url
         }
-        data = {
+        params = {
             "uid": username
         }
-        res = http.post(CHANNEL_INFO_URL, data=data, headers=headers)
+        res = http.get(CHANNEL_INFO_URL, params=params, headers=headers)
 
         return http.json(res, schema=_channel_schema)
 
